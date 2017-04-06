@@ -1,9 +1,7 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_list_or_404
 from django.views import generic
 from .models import Station
 import googlemaps
-import json
 
 ROUTES = 'routes'
 LEGS = 'legs'
@@ -25,7 +23,6 @@ class IndexView(generic.ListView):
 
 
 def submit(request):
-
     if request.POST['origin'] is None or request.POST['destination'] is None:
         return render(request,
                       "realtime/index.html",
@@ -33,8 +30,7 @@ def submit(request):
                        'error_message': "Invalid selection. Please try again."}
                       )
 
-    transit_tag = ' station, Boston, MA'
-    driving_tag = ', Boston, MA'
+    tag = ' Station, Boston, MA'
 
     gmaps = googlemaps.Client(key=KEY)
 
@@ -51,23 +47,23 @@ def submit(request):
         # print('origin: {}'.format(origin.name))
         # print('destination: {}'.format(destination.name))
 
-        transit_directions = gmaps.directions(origin.name + transit_tag,
-                                              destination.name + transit_tag,
+        transit_directions = gmaps.directions(origin.name + tag,
+                                              destination.name + tag,
                                               mode='transit',
                                               departure_time='now')
-        driving_directions = gmaps.directions(origin.name + driving_tag,
-                                              destination.name + driving_tag,
+        driving_directions = gmaps.directions(origin.name + tag,
+                                              destination.name + tag,
                                               mode='driving',
                                               departure_time='now')
-        walking_directions = gmaps.directions(origin.name + driving_tag,
-                                              destination.name + driving_tag,
+        walking_directions = gmaps.directions(origin.name + tag,
+                                              destination.name + tag,
                                               mode='walking',
                                               departure_time='now')
 
-        bicycling_directions = gmaps.directions(origin.name + driving_tag,
-                                              destination.name + driving_tag,
-                                              mode='bicycling',
-                                              departure_time='now')
+        bicycling_directions = gmaps.directions(origin.name + tag,
+                                                destination.name + tag,
+                                                mode='bicycling',
+                                                departure_time='now')
 
         transit_distance = transit_directions[0][LEGS][0][DISTANCE]
         driving_distance = driving_directions[0][LEGS][0][DISTANCE]
@@ -79,8 +75,10 @@ def submit(request):
         walking_duration = walking_directions[0][LEGS][0][DURATION]
         bicycling_duration = bicycling_directions[0][LEGS][0][DURATION]
 
-        transit_departure = transit_directions[0][LEGS][0][DEPARTURE_TIME]
-        transit_arrival = transit_directions[0][LEGS][0][ARRIVAL_TIME]
+        shortest_duration = analyze_duration(transit_duration[VALUE],
+                                             driving_duration[VALUE],
+                                             walking_duration[VALUE],
+                                             bicycling_duration[VALUE])
 
         params = {'transit_distance': transit_distance[TEXT],
                   'driving_distance': driving_distance[TEXT],
@@ -88,15 +86,39 @@ def submit(request):
                   'transit_duration': transit_duration[TEXT],
                   'driving_duration': driving_duration[TEXT],
                   'walking_duration': walking_duration[TEXT],
-                  'transit_departure': transit_departure[TEXT],
-                  'transit_arrival': transit_arrival[TEXT],
                   'bicycling_distance': bicycling_distance[TEXT],
                   'bicycling_duration': bicycling_duration[TEXT],
                   'origin': origin.name.replace(' ', '+'),
                   'destination': destination.name.replace(' ', '+'),
                   'key': KEY,
-
+                  'shortest_duration': shortest_duration,
                   }
 
         return render(request, "realtime/result.html", params)
 
+
+def analyze_duration(transit_duration, driving_duration, walking_duration, bicycling_duration):
+    TIME_DIFF = 300
+    result = []
+
+    min_duration = min(transit_duration, driving_duration, walking_duration, bicycling_duration)
+
+    if min_duration == driving_duration:
+        result.append('driving')
+    elif min_duration == transit_duration:
+        result.append('transit')
+    elif min_duration == walking_duration:
+        result.append('walking')
+    elif min_duration == bicycling_duration:
+        result.append('bicycling')
+
+    if 'walking' not in result and abs(walking_duration - min_duration) < TIME_DIFF:
+        result.append('walking')
+    if 'bicycling' not in result and abs(bicycling_duration - min_duration) < TIME_DIFF:
+        result.append('bicycling')
+    if 'transit' not in result and abs(transit_duration - min_duration) < TIME_DIFF:
+        result.append('transit')
+    if 'driving' not in result and abs(driving_duration - min_duration) < TIME_DIFF:
+        result.append('driving')
+
+    return result

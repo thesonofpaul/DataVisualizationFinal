@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <title>Results</title>
     <!-- Latest compiled and minified CSS -->
@@ -44,10 +45,10 @@
     <div class="row secondary">
         <table class="result-table">
             <tr>
-                <th><h4>Transit</h4></th>
-                <th><h4>Driving</h4></th>
-                <th><h4>Walking</h4></th>
-                <th><h4>Bicycling</h4></th>
+                <th><h4>{% if 'transit' in shortest_duration %}<strong>Transit</strong>{% else %}Transit{% endif %}</h4></th>
+                <th><h4>{% if 'driving' in shortest_duration %}<strong>Driving</strong>{% else %}Driving{% endif %}</h4></th>
+                <th><h4>{% if 'walking' in shortest_duration %}<strong>Walking</strong>{% else %}Walking{% endif %}</h4></th>
+                <th><h4>{% if 'bicycling' in shortest_duration %}<strong>Bicycling</strong>{% else %}Bicycling{% endif %}</h4></th>
             </tr>
             <tr>
                 <td class="col">
@@ -61,14 +62,6 @@
                             <tr>
                                 <td>Duration:</td>
                                 <td>{{ transit_duration }}</td>
-                            </tr>
-                            <tr>
-                                <td>Departure Time:</td>
-                                <td>{{ transit_departure }}</td>
-                            </tr>
-                            <tr>
-                                <td>Arrival Time:</td>
-                                <td>{{ transit_arrival }}</td>
                             </tr>
                         </table>
                     </div>
@@ -118,6 +111,9 @@
             </tr>
         </table>
     </div>
+    <div class="back-button">
+        <input type="button" onclick="window.location='/index';" value="Change Directions" />
+    </div>
 </div>
 
 
@@ -136,8 +132,8 @@
 
       function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         var selectedMode = document.getElementById('mode').value;
-        var origin = '{{origin}}, Boston, MA';
-        var destination = '{{destination}}, Boston, MA';
+        var origin = '{{origin}} Station, Boston, MA';
+        var destination = '{{destination}} Station, Boston, MA';
         directionsService.route({
           origin: origin.replace('+', ' '),
           destination: destination.replace('+', ' '),
@@ -150,10 +146,6 @@
           }
         });
       }
-
-
-
-
 </script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB188mNwiom1mDWU9JlpLyWQRRISq8ghjE&callback=initMap">

@@ -1,6 +1,7 @@
 body{
     background: #000;
     color: #fff;
+    font-family: 'Roboto', serif;
 }
 
 .mbta-container{
@@ -33,11 +34,12 @@ body{
 
 .drop-label {
     text-align: left;
-    padding-left: 25%;
+    padding-left: 2%;
 }
 
 .result-table {
     width: 100%;
+    margin-bottom: 3%;
 }
 
 .result-table, th, .col{
@@ -93,6 +95,5 @@ strong{
 
 #floating-panel {
     text-align: center;
-    font-family: 'Roboto','sans-serif';
     line-height: 30px;
 }
