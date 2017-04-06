@@ -1,0 +1,98 @@
+body{
+    background: #000;
+    color: #fff;
+}
+
+.mbta-container{
+    margin-top: 15%;
+    border: solid 2px #fff;
+    background: #000;
+    display: flex;
+    height: 25em;
+}
+
+.map-container{
+    margin: auto;
+    width: 75%;
+    border: solid 5px #fff;
+    height: 25em;
+}
+
+.map-container iframe{
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.row.secondary {
+    margin-top: 5%;
+    width: 100%;
+}
+
+.drop-label {
+    text-align: left;
+    padding-left: 25%;
+}
+
+.result-table {
+    width: 100%;
+}
+
+.result-table, th, .col{
+    border: 2px solid white;
+}
+
+td {
+    padding: 10px;
+    vertical-align: top;
+}
+
+th {
+    text-align: center;
+}
+
+h2 {
+    padding-top: 1%;
+    padding-bottom: 2%;
+}
+
+.mbta-inner {
+    margin: auto;
+}
+
+.dropdown {
+    color: black;
+}
+
+input{
+    margin-bottom: 1em;
+    width: 162px;
+    color: black;
+}
+
+form{
+    margin-top: 30px;
+    text-align: center;
+}
+
+.invalid-input{
+    padding-top: 3%;
+    text-align: center;
+}
+
+strong{
+    color: #ff0000;
+}
+
+
+#map {
+    height: 92%;
+}
+
+#floating-panel {
+    text-align: center;
+    font-family: 'Roboto','sans-serif';
+    line-height: 30px;
+}
