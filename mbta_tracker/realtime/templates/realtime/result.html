@@ -26,7 +26,7 @@
 <div class="container">
     <div class="row main">
         <div class="result-container">
-            <h2>Your Trip Results:</h2>
+            <h2>Your Trip Results: from <label class="origin">{{ origin }}</label> to <label class="dest">{{ destination }}</label></h2>
             <div class="map-container">
                 <div id="floating-panel">
                     <b>Mode of Travel: </b>
@@ -45,17 +45,27 @@
     <div class="row secondary">
         <table class="result-table">
             <tr>
-                <th><h4>{% if 'transit' in shortest_duration %}<strong>Transit</strong>{% else %}Transit{% endif %}</h4></th>
-                <th><h4>{% if 'driving' in shortest_duration %}<strong>Driving</strong>{% else %}Driving{% endif %}</h4></th>
-                <th><h4>{% if 'walking' in shortest_duration %}<strong>Walking</strong>{% else %}Walking{% endif %}</h4></th>
-                <th><h4>{% if 'bicycling' in shortest_duration %}<strong>Bicycling</strong>{% else %}Bicycling{% endif %}</h4></th>
+                <th><h4>{% if 'transit' in shortest_duration %}Transit{% else %}<weak>Transit</weak>{% endif %}</h4></th>
+                <th><h4>{% if 'driving' in shortest_duration %}Driving{% else %}<weak>Driving</weak>{% endif %}</h4></th>
+                <th><h4>{% if 'walking' in shortest_duration %}Walking{% else %}<weak>Walking</weak>{% endif %}</h4></th>
+                <th><h4>{% if 'bicycling' in shortest_duration %}Bicycling{% else %}<weak>Bicycling</weak>{% endif %}</h4></th>
             </tr>
             <tr>
                 <td class="col">
 
                     <div class="transit-container">
                         <table class="inner-table">
+			{% if 'transit' not in shortest_duration %}
                             <tr>
+                                <td><weak>Distance:</weak></td>
+                                <td><weak>{{ transit_distance }}</weak></td>
+                            </tr>
+                            <tr>
+                                <td><weak>Duration:</weak></td>
+                                <td><weak>{{ transit_duration }}</weak></td>
+                            </tr>
+			{% else %}
+				<tr>
                                 <td>Distance:</td>
                                 <td>{{ transit_distance }}</td>
                             </tr>
@@ -63,13 +73,24 @@
                                 <td>Duration:</td>
                                 <td>{{ transit_duration }}</td>
                             </tr>
+			{% endif %}
                         </table>
                     </div>
                 </td>
                 <td class="col">
                     <div class="driving-container">
                         <table class="inner-table">
+			{% if 'driving' not in shortest_duration %}
                             <tr>
+                                <td><weak>Distance:</weak></td>
+                                <td><weak>{{ driving_distance }}</weak></td>
+                            </tr>
+                            <tr>
+                                <td><weak>Duration:</weak></td>
+                                <td><weak>{{ driving_duration }}</weak></td>
+                            </tr>
+			{% else %}
+				<tr>
                                 <td>Distance:</td>
                                 <td>{{ driving_distance }}</td>
                             </tr>
@@ -77,13 +98,24 @@
                                 <td>Duration:</td>
                                 <td>{{ driving_duration }}</td>
                             </tr>
+			{% endif %}
                         </table>
                     </div>
                 </td>
                 <td class="col">
                     <div class="walking-container">
                         <table class="inner-table">
+			{% if 'walking' not in shortest_duration %}
                             <tr>
+                                <td><weak>Distance:</weak></td>
+                                <td><weak>{{ walking_distance }}</weak></td>
+                            </tr>
+                            <tr>
+                                <td><weak>Duration:</weak></td>
+                                <td><weak>{{ walking_duration }}</weak></td>
+                            </tr>
+			{% else %}
+				<tr>
                                 <td>Distance:</td>
                                 <td>{{ walking_distance }}</td>
                             </tr>
@@ -91,13 +123,24 @@
                                 <td>Duration:</td>
                                 <td>{{ walking_duration }}</td>
                             </tr>
+			{% endif %}
                         </table>
                     </div>
                 </td>
                 <td class="col">
                     <div class="bicycling-container">
                         <table class="inner-table">
+			{% if 'bicycling' not in shortest_duration %}
                             <tr>
+                                <td><weak>Distance:</weak></td>
+                                <td><weak>{{ bicycling_distance }}</weak></td>
+                            </tr>
+                            <tr>
+                                <td><weak>Duration:</weak></td>
+                                <td><weak>{{ bicycling_duration }}</weak></td>
+                            </tr>
+			{% else %}
+				<tr>
                                 <td>Distance:</td>
                                 <td>{{ bicycling_distance }}</td>
                             </tr>
@@ -105,6 +148,7 @@
                                 <td>Duration:</td>
                                 <td>{{ bicycling_duration }}</td>
                             </tr>
+			{% endif %}
                         </table>
                     </div>
                 </td>
@@ -135,8 +179,8 @@
         var origin = '{{origin}} Station, Boston, MA';
         var destination = '{{destination}} Station, Boston, MA';
         directionsService.route({
-          origin: origin.replace('+', ' '),
-          destination: destination.replace('+', ' '),
+          origin: origin,
+          destination: destination,
           travelMode: google.maps.TravelMode[selectedMode]
         }, function(response, status) {
           if (status == 'OK') {

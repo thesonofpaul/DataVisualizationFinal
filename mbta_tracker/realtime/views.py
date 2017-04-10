@@ -23,7 +23,7 @@ class IndexView(generic.ListView):
 
 
 def submit(request):
-    if request.POST['origin'] is None or request.POST['destination'] is None:
+    if request.POST['origin'] is None or request.POST['destination'] is None or request.POST['origin'] == request.POST['destination']:
         return render(request,
                       "realtime/index.html",
                       {'stations': get_list_or_404(Station.objects.order_by('name')),
@@ -88,8 +88,8 @@ def submit(request):
                   'walking_duration': walking_duration[TEXT],
                   'bicycling_distance': bicycling_distance[TEXT],
                   'bicycling_duration': bicycling_duration[TEXT],
-                  'origin': origin.name.replace(' ', '+'),
-                  'destination': destination.name.replace(' ', '+'),
+                  'origin': origin.name,
+                  'destination': destination.name,
                   'key': KEY,
                   'shortest_duration': shortest_duration,
                   }
