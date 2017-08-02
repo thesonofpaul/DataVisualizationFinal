@@ -25,7 +25,7 @@ SECRET_KEY = 'o)eb-3hr3f*6f7v_z!=iz@mi*@bi0!&xd1s68nkx7c(q48&y-i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '54.244.62.12', 'mbtarealtime.site', 'www.mbtarealtime.site']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '54.244.62.12', 'mbtarealtime.site', 'www.mbtarealtime.site']
 
 
 # Application definition

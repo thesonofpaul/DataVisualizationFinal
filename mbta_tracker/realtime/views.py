@@ -13,7 +13,6 @@ TEXT = 'text'
 VALUE = 'value'
 KEY = 'AIzaSyB188mNwiom1mDWU9JlpLyWQRRISq8ghjE'
 
-
 class IndexView(generic.ListView):
     template_name = 'realtime/index.html'
     context_object_name = 'stations'
@@ -21,14 +20,14 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return get_list_or_404(Station.objects.order_by('name'))
 
-
 def submit(request):
     if request.POST['origin'] is None or request.POST['destination'] is None or request.POST['origin'] == request.POST['destination']:
         return render(request,
-                      "realtime/index.html",
-                      {'stations': get_list_or_404(Station.objects.order_by('name')),
-                       'error_message': "Invalid selection. Please try again."}
-                      )
+                      "realtime/index.html", {
+			'stations': get_list_or_404(Station.objects.order_by('name')),
+			'error_message': "Invalid selection. Please try again.",
+			'title': 'MBTA Realtime Route Planner',
+		})
 
     tag = ' Station, Boston, MA'
 
@@ -39,10 +38,11 @@ def submit(request):
         destination = Station.objects.get(id=request.POST['destination'])
     except (KeyError, ValueError, Station.DoesNotExist):
         return render(request,
-                      "realtime/index.html",
-                      {'stations': get_list_or_404(Station.objects.order_by('name')),
-                       'error_message': "Invalid selection. Please try again."}
-                      )
+                      "realtime/index.html", {
+			'stations': get_list_or_404(Station.objects.order_by('name')),
+			'error_message': "Invalid selection. Please try again.",
+			'title': 'MBTA Realtime Route Planner',
+		})
     else:
         # print('origin: {}'.format(origin.name))
         # print('destination: {}'.format(destination.name))
@@ -92,6 +92,7 @@ def submit(request):
                   'destination': destination.name,
                   'key': KEY,
                   'shortest_duration': shortest_duration,
+		  'title': 'Trip Details',
                   }
 
         return render(request, "realtime/result.html", params)
